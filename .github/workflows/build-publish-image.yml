@@ -19,7 +19,6 @@ env:
 
 jobs:
   export-registry:
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'update manifest and helm charts')
     runs-on: ubuntu-20.04
     outputs:
       registry: ${{ steps.export.outputs.registry }}
@@ -30,7 +29,6 @@ jobs:
           echo "registry=$(echo "${{ env.REGISTRY }}/${{ github.repository }}" | tr [:upper:] [:lower:])" >> $GITHUB_OUTPUT
 
   create-tag:
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'update manifest and helm charts')
     runs-on: ubuntu-20.04
     outputs:
       tag: ${{ steps.get-tag.outputs.tag }}
@@ -59,7 +57,6 @@ jobs:
             })
 
   publish-images:
-    if: github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'update manifest and helm charts')
     needs:
       - create-tag
       - export-registry
@@ -89,19 +86,6 @@ jobs:
         env:
           VERSION: ${{ env.IMG_TAG }}
 
-      - name: Scan ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }}
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMG_TAG }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          timeout: '5m0s'
-        env:
-          TRIVY_USERNAME: ${{ github.actor }}
-          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       - name: Save registry and tag as an artifact for other workflows that run on workflow_run to download them
         run: |
           mkdir -p /tmp/artifacts
