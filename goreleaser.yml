@@ -35,6 +35,7 @@ builds:
 
 release:
   target_commitish: "{{ .Env.GITHUB_SHA }}"
+  tag: "{{ .CurrentTag }}"
   prerelease: auto
   disable: true
 changelog:
