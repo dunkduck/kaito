@@ -34,10 +34,10 @@ builds:
       - GO111MODULE=on
 
 release:
-  target_commitish: "{{ .Env.GITHUB_SHA }}"
-  tag: "{{ .CurrentTag }}"
-  prerelease: auto
-  disable: true
+  github:
+    owner: "gofri"
+    name: "kaito"
+
 changelog:
   skip: false
   groups:
